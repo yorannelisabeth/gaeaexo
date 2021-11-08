@@ -1,0 +1,220 @@
+   
+   ne pas envoyer ces migration lors d'un push / si jamais c'est fait supprimer toute les migration existante en local et distant puis refaire les commande de make:migrate puis migration migrate
+   
+   - symfony server:ca:install
+   -composer require maker
+    - composer require maker --dev
+    - composer require annotations
+    - symfony console make:controller  (donner un nom au controller)
+    - composer require twig 
+
+    installer la ligne du dessous pour nous permettre de nous connecté a une base de donné souhaiter
+    -composer require orm
+
+un fois la modif fait dnas le fichier .env avec tous ce que l'on souhaite faire on lance la commande si dessous (toujours utiliser symfony console ou php/bin console pour les commande concernant les base de donné)
+
+    -symfony console doctrine:database:create
+
+
+-symfony console make:entity
+
+une fois les info entré
+-php bin/console make:migration
+ou
+-symfony console make:migration
+
+pour modifié la BDD avec les champ cré si dessus 2 ecriture possible  soit l'un ou soit l'autre
+-php bin/console doctrine:migrations:migrate
+-symfony console doctrine:migrations:migrate
+
+cette commande ajoutera également une table migration qu'il ne faut pas supprimer car elle enregistre toute les historiques de migration que l'on aura effectuer au cours du projet
+
+-composer require form validator
+
+
+recap 10/05/20121
+composer require orm // gérer la bdd
+composer form validator // générer des formulaires
+
+
+class Entity : représente une table de la bdd, un objet Entity représente une enregistrement de la bdd
+
+symfony console make:entity  //
+symfony console make:migration // génére les requêtes SQL qui vont mettre à jour la bdd selon les entités
+symfony console doctrine:migrations:migrate // exécute les migrations
+
+Enregistrer dans une table
+	EntityManager : une classe qui permet d'insérer, modifier, supprimer des données dans une table (requête SQL : INSERT, UPDATE, DELETE)
+    Pour enregistrer un nouvel enregistrement :
+    	$entityManager->persist($livre)  // les requêtes vont être formées à partir d'objet de classe Entity. Les reqûetes sont mise en attente
+        
+        $entityManager->flush()  // exécute les requêtes en attente et modifie la base de données
+    
+Requête SELECT
+	les classes Repository permettent d'interroger la bdd. Il y a une classe Repository pour chaque classe Entity
+    
+
+classe Request : gère la requête HTTP. Un objet de cette classe contient toutes les valeurs des superglobales de PHP
+
+Pour utiliser cette classe (et d'autres comme les Repository, EntityManageer, ...) qu'on ne peut pas instancier, on peut l'instancier en la passant comme 
+paramètre d'une méthode d'un controleur
+
+    -symfony console make:form
+
+pour les connexion et creation compte géré l'autentification
+
+    -composer require security
+    
+    -symfony console make:user 
+    
+    //(Abonne) (yes) (pseudo) (yes)
+    -symfony console make:entity   
+    //(Abonne) (prenom) (string) (30) (yes) (nom) (string)(30)(yes) entré
+    (cette commande pour ajouter de nouvelle propriété a Abonne ,on la reselectionner Abonne et rejouter prenom et nom ) 
+    )
+
+⚠ absolument faire les deux commande si dessous si l'on souhaite que la table ce créer en base de donné 
+    -php bin/console make:migration
+    
+    -php bin/console doctrine:migrations:migrate
+
+    - symfony console make:auth    
+       // (1) (Login) (SecurityController) (yes)
+       //toujour faire le make auth avant le registration-form
+
+    - symfony console make:registration-form
+    // (yes) ((no) car chiant en local) (yes)
+
+
+    installer une barre de debug pour les developpeur
+        - composer require debug --dev
+    
+le 12/05/2021 9h30 récapitulatif formulaire de connexion et création d'utilisateur 
+
+Pour faire du crud :
+    -sympfony console make:crud
+    //(Abonne) (AbonneController)
+
+
+symfony console make:entity   Categorie  
+// 12h35 le 12/05/2021
+
+symfony console make:entity   Livre     
+// 12h37 le 12/05/2021 ici on voulait rajouter un champ donc on utilise la meme commande pour ajouter un champ
+
+
+pour recupérer et installer un projet symfony 
+-composer install 
+
+Résumer crud  lundi 17/05/2021 9h30
+
+------------------------------------------
+
+correction exercice 10h05 le 17/05/2021 
+
+------------------------------------------------
+GESTION DU FRONT
+-------------------------------------------
+16h30 17/05/2021
+Installation de yarn : https://classic.yarnpkg.com/en/docs/install#windows-stable 
+dans le dossier du projet dans me powershell
+- composer require encore
+- yarn install
+
+pour compilé le css
+- yarn add node-sass 
+- yarn add sass-loader
+
+pour bootsrap
+- yarn add bootstrap // installera la dernière version stable
+- yarn add jquery // pour bootsrap qui a forcement besoin de jquery
+- yarn add popper.js      //sa permet de géré les pop up
+
+pour les fonts
+yarn add @fortawesome/fontawesome-free
+
+decommenter la ligne 59 (.enableSassLoader()) et 72 (.autoProvidejQuery()) dans webpack.config.js pour pouvoir utiliser bootsrap
+
+renommer le fichier app.css en app.scss dans le dossier assets puis ajouter les imports
+
+ne aps oublier de renommer dans app.js 
+import './styles/app.css'  en ==> import './styles/app.scss';     en gros le scss
+
+puis dans ce même fichier ajouter ces ligne de code :
+
+const $ = require("jquery");
+global.$= global.jQuery = $;
+window.Popper = require("popper.js");
+require("bootstrap");
+
+symfony server:list pour voir si il y a d'autre serveur ouvert en même temps
+
+
+et supprimer cette ligne :
+// start the Stimulus application
+import './bootstrap';
+
+---------------------------------
+suite
+--------------------------------------------------
+
+deux possibilité soit dans un premier temps on retire la version que l'on ne veut pas en faisant
+- yarn remove bootstrap 
+
+puis / ou/ on fait direct sans supprimer avant ( dernière option a tester 😊 )
+- yarn add bootstrap@^4.6   // ici on ajoute la version de bootstrap souhaiter
+
+puis
+- yarn encore dev
+
+
+/--------------------09h49 le 18/05/2021------------------------------------/
+pour mettre en production 
+- yarn encore prod
+
+
+/--------------a chaque fois que l'on fait une modification css etc on fait cette commande
+- yarn encore dev 
+/--------------------------ou sinon le faire de façon automatique grace a 
+- voir la commande durant le cours du 18/05/2021 10h              
+le terminal sera bloquer donc ouvrir a côté un autre terminal 
+
+
+pour le PROJET
+pour geré les conecté on fait
+make:user   
+make:entity (pour ajouter des champ des propriété à la classe Entity\User)
+make:auth (authentification) le faire avant de créée l'inscription
+make:registration-form (inscription)
+
+pour le formulaire pour mettre les champ dans l'ordre que l'on veut regarder le cours a 10h10 le 19/05/2021
+
+
+symfony console doctrine:database:create
+pour crré la base de donné par default
+
+pour ajouter en local des element nouveau d'une bdd d'une branch distante par exemple
+php bin/console doctrine:migrations:migrate
+
+
+pour annuler une migration : 
+
+symfony server:start -d
+
+
+losrque l'on récupère un projet on fait un -yarn install pour recupérer les nodemodules
+puis un - composer install
+
+auto indentation au moment de la sauvegarde
+
+ok
+pour les windowsien
+ctrl ,
+ça vous ouvre les settings
+ensuite vous tapez
+format
+dedans
+ensuite vous cochez la checkbox dans "Editor: Format On Save"
+et c'est ok
+et vous verrez la magie opérer à chaque fois que vous enregistrerez
+votre fichier ;)

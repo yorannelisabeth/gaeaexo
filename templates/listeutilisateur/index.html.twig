@@ -1,0 +1,42 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello ListeutilisateurController!{% endblock %}
+
+{% block body %}
+
+
+
+
+<table class="table table-bordered table-striped">
+    <thead class="thead-dark">
+        <tr>
+            <th>ID</th>
+            <th>nom</th>
+            <th>prenom</th>
+            <th>adresse</th>
+            <th>email</th>
+            <th>tel</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for utilisateur in utilisateurs %}
+            <tr>
+                <td>{{ utilisateur.id }}</td>
+                <td>{{ utilisateur.nom }}</td>
+                <td>{{ utilisateur.prenom }}</td>
+               <td>{{ utilisateur.adresse }}</td>
+               <td>{{ utilisateur.email }}</td>
+               <td>{{ utilisateur.tel }}</td>
+               <td><a href="{{path("listeutilisateur_supprimer" , {id : utilisateur.id}) }}">supprimer</a></td> 
+            </tr>
+        {% endfor %}
+
+
+
+        
+    </tbody>
+
+   
+</table>
+{% endblock %}
