@@ -16,6 +16,9 @@
             <th>adresse</th>
             <th>email</th>
             <th>tel</th>
+            <th>Actions</th>
+            
+            
         </tr>
     </thead>
 
@@ -28,7 +31,10 @@
                <td>{{ utilisateur.adresse }}</td>
                <td>{{ utilisateur.email }}</td>
                <td>{{ utilisateur.tel }}</td>
-               <td><a href="{{path("listeutilisateur_supprimer" , {id : utilisateur.id}) }}">supprimer</a></td> 
+               <td>
+               <a href="{{path("listeutilisateur_modifier",{id: utilisateur.id})}}">modifier/</a>
+               <a href="{{path("listeutilisateur_supprimer",{id: utilisateur.id})}}">Supprimer</a>
+               </td>
             </tr>
         {% endfor %}
 

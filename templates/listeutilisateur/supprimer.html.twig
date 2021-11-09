@@ -1,5 +1,5 @@
 {% extends "base.html.twig" %}
-{% block title %}Supprimer utilisateur{% endblock %}
+
 
 {% block titreH1 %}Confirmation de suppression utilisateur n°{{utilisateur.id}}{% endblock %}
 
@@ -12,7 +12,8 @@
 
     <form action="" method="post">
         <button type="submit" class="btn btn-success">Confirmer la suppression</button>
-      
+        <a href="{{path("utilisateur")}}" class="btn b">Retour</a>
     </form>
 {% endblock %}
 
+{% block title %}Supprimer utilisateur{% endblock %}

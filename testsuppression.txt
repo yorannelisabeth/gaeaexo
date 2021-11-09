@@ -1,0 +1,29 @@
+ /**
+     * @Route("/listeutilisateur/supprimer", name="listeutilisateur_supprimer")
+     */
+    public function supprimer( Request $request,$id )
+    //faire une recuperation type find id
+    {
+
+       
+        $em = $this->getDoctrine()->getManager();
+        $utilisateur = $this->getDoctrine()->getRepository(Utilisateur::class);
+        $utilisateur = $utilisateur->find($id);
+
+
+      
+       if ($request->isMethod("POST")){
+        
+       
+           // prépare la requète DELETE
+           $em->remove($utilisateur);
+           $em->flush();
+         
+       }
+        return $this->render("listeutilisateur/supprimer.html.twig");
+    }
+
+     //\d+ pour que le parametre nombre soit un entier de 1 ou plusieur chiffre
+    //utilisateurrepository a la place de l'entity
+    // plus ajout methode niveau annotation
+    //retrouver la commande pour m'afficher les routes
