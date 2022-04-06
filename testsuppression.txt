@@ -27,3 +27,193 @@
     //utilisateurrepository a la place de l'entity
     // plus ajout methode niveau annotation
     //retrouver la commande pour m'afficher les routes
+
+
+     public function MapCompanies()
+    {
+
+        $em = $this->getDoctrine()->getManager();
+        $companies = $em->getRepository(Company::class)->findAll();
+
+        return $this->render('page/map.html.twig',[
+            'companies'=> json_encode($companies)
+        ]);
+    }
+
+     /**
+     * @Route("/product2/{id}", name="companyShowFromId")
+     */
+    public function showFromId($id)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $company = $em->getRepository(Company::class)->findOneBy(['id' => $id]);
+        $em = $this->getDoctrine()->getManager();
+        $date=(new \DateTime());
+        $visit = $em->getRepository(Visite::class)->findOneBy( array('companySlug' => $company->getSlug(), 'date' => $date) );
+
+
+        if ($visit==null):
+            $visite = new Visite();
+
+            $visite->setDate($date);
+            $visite->setCompanySlug($company->getSlug());
+            $visite->setNumber(1);
+            $em->persist($visite);
+            $em->flush();
+        else :
+
+            $visit->setNumber($visit->getNumber()+1);
+            $em->persist($visit);
+            $em->flush();
+
+        endif;
+        $products = $em->getRepository(Product::class)->findBy( array('company' => $company) );
+
+        if($this->isGranted('IS_AUTHENTICATED_FULLY'))
+        {
+            $em = $this->getDoctrine()->getManager();
+            $company = $em->getRepository(Company::class)->findOneBy( array('slug' => $company->getSlug() ) );
+            $user=$this->getUser();
+            $companyFav = $em->getRepository(CompanyFav::class)->findOneBy( array('user' => $user,'company' => $company ) );
+
+
+            if($companyFav == null)
+            {
+                $n=0;
+
+            } else {
+                $n=1;
+
+            }
+
+
+        } else {
+            $n=3;
+
+        }
+
+
+        return $this->render('company/entreprise.html.twig', [
+
+            'company' => $company,
+            'visit' => $visit,
+            'products'=>$products,
+            'n'=>$n
+
+        ]);
+
+    }
+
+
+    public function showProducts()
+    {
+        //$this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+        $marchandises = $this->getDoctrine()
+            ->getRepository('App:Marchandise')
+            ->createQueryBuilder('p')
+            ->andWhere('p.company = :id')
+            ->setParameter('id', $this->getUser()->getId())
+            ->getQuery()
+            ->getArrayResult();
+        dump($marchandises);
+        return $this->render('product/manage.html.twig', [
+            'marchandises' => $marchandises
+        ]);
+    }
+
+
+
+
+    
+    /**
+     * @Route("/entreprise/{slug}", name="companyShow")
+     */
+    public function show($slug)
+    {
+
+
+
+        $em = $this->getDoctrine()->getManager();
+        $company = $em->getRepository(Company::class)->findOneBy(['slug' => $slug]);
+        $date=(new \DateTime());
+        $visit = $em->getRepository(Visite::class)->findOneBy( array('companySlug' => $slug, 'date' => $date) );
+
+
+        if ($visit==null):
+            $visite = new Visite();
+
+            $visite->setDate($date);
+            $visite->setCompanySlug($slug);
+            $visite->setNumber(1);
+            $em->persist($visite);
+            $em->flush();
+        else :
+
+            $visit->setNumber($visit->getNumber()+1);
+            $em->persist($visit);
+            $em->flush();
+
+        endif;
+        $products = $em->getRepository(Product::class)->findBy( array('company' => $company) );
+
+        if($this->isGranted('IS_AUTHENTICATED_FULLY'))
+        {
+            $em = $this->getDoctrine()->getManager();
+            $company = $em->getRepository(Company::class)->findOneBy( array('slug' => $slug ) );
+            $user=$this->getUser();
+            $companyFav = $em->getRepository(CompanyFav::class)->findOneBy( array('user' => $user,'company' => $company ) );
+
+            if($companyFav == null)
+            {
+                $n=0;
+
+            } else {
+                $n=1;
+
+            }
+
+
+        } else {
+            $n=3;
+
+        }
+
+
+
+
+
+        return $this->render('company/entreprise.html.twig', [
+
+            'company' => $company,
+            'visit' => $visit,
+            'products'=>$products,
+            'n'=>$n
+
+        ]); 
+
+    }
+
+
+
+
+
+        // function show companydetails
+                     /**
+     * @Route("company/show/{id}", name="ShowCompanyDetails" , requirements={"id"="\d+"})
+     * @Method("POST")
+     */
+
+    public function showDetails($id){
+        // $companyDetails = $CompanyRepository->find($id);
+        // $companyDetailsSelect= $this
+        // $companyDetailsSelect->handleRequest($request);
+
+
+        $em = $this->getDoctrine()->getManager();
+        $company = $em->getRepository(Company::class)->find(['id' => $id]);
+        return $this->render('company/showCompanyDetails.html.twig', [
+
+            'company' => $company
+
+        ]); 
+    }

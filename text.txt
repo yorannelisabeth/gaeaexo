@@ -1,0 +1,103 @@
+<div class="wrap">
+
+    {# <div class="frm-container"> #}
+        {{ form_start(form,{'attr': {'class': 'frm-content'}}) }}
+        <div class="frm-file-upload">
+            <div class="imgPreview">
+                {# A la modification d'un produit on affiche par défaut l'image actuelle #}
+                {% if file_name is defined and file_name is not null %}
+                    <img src='/uploads/products/{{file_name}}' alt="" class="preview"/>
+                {% else %}
+                    <img src='' alt="" class="preview"/>
+                {% endif %}
+                <div style="color:red" class="div-erreur-image erreur"></div>
+            </div>
+            {{ form_label(form.image) }}
+            <div class="erreur">
+                {{ form_errors(form.image) }}
+            </div>
+            {{ form_widget(form.image,{'attr': {'class' : 'fileUpload'}}) }}
+
+        </div>
+
+        <div class="frm-nom-description">
+            {{ form_row(form.name,{'label': 'Nom *'}) }}
+            {{ form_row(form.description,{'label': 'Description *'}) }}
+        </div>
+
+        <div class="frm-subcat">
+            {{ form_row(form.subcategories,{'label': 'Sous-catégorie(s) *', 'attr': {'class': 'js-example-basic-multiple' } }) }}
+        </div>
+
+        <div class="frm-left">
+            {{ form_row(form.certification,{'label': 'Certification *'}) }}
+            {{ form_row(form.origin,{'label': 'Provenance *'}) }}
+            {{ form_row(form.quantity,{'label': 'Quantité *'}) }}
+            <div class="itemProperties">
+                <div class="itemWeightVolVal">
+                    {{ form_row(form.volume,{'label': 'Volume'}) }}
+                </div>
+                <div class="itemUnit">
+                    {{ form_row(form.volumeunit,{'label': ' '}) }}
+                </div>
+            </div>
+            {{ form_row(form.price,{'label': 'Prix *'}) }}
+            {{ form_row(form.currency,{'label': 'Devise *'}) }}
+
+            <p class="frm_txt_expl_ent">* ce champ est obligatoire</p>
+        </div>
+
+        **************************************************************************************************
+        
+       /**
+     * @Route("/newsletter/data", name="newsletter_data")
+     */
+    public function data(NewsLetterUserRepository $NewsLetterUserRepository):array
+    {
+        $list = [];
+        $newsletterUser = $NewsLetterUserRepository->findAll();
+        foreach ( $newsletterUser as $user) {
+            $list[] = [
+                $user->getNom(),
+                $user->getPrenom(),
+                $user->getMail(),
+                $user->getVille(),
+                $user->getCodePostal(),
+            ];
+        }
+        return $list;
+       
+        return $this->render('newsletter/data.html.twig' , [
+            'newsletterUser' => $newsletterUser
+        ]);
+     
+    }
+      /**
+     * @Route("/newsletter/exportdata", name="newsletter_exportdata")
+     */
+    public function export()
+    {
+        $spreadsheet = new Spreadsheet();
+
+        $sheet = $spreadsheet->getActiveSheet();
+
+        $sheet->setTitle('NewsletterUser List');
+
+        $sheet->getCell('A1')->setValue('Nom');
+        $sheet->getCell('B1')->setValue('Prénom');
+        $sheet->getCell('C1')->setValue('Mail');
+        $sheet->getCell('D1')->setValue('Ville');
+        $sheet->getCell('E1')->setValue('Code-Postal');
+
+        // Increase row cursor after header write
+            $sheet->fromArray($this->data(),null, 'A2', true);
+        
+
+        $writer = new Xlsx($spreadsheet);
+
+        $writer->save('newsletteruser.xlsx');
+
+        return $this->redirectToRoute('data.html.twig');
+    }
+
+    zlrxzandre lui demzander pour la couleur rouge du error location span

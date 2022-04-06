@@ -10,6 +10,9 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Doctrine\ORM\EntityManagerInterface as EntityManager;
+use Dompdf\Dompdf;
+use Dompdf\Options;
+
 // use Symfony\Component\Form\FormTypeInterface;
 
 
@@ -83,6 +86,73 @@ class ListeutilisateurController extends AbstractController
      
 
     }
+     /**
+     * @Route("/listeutilisateur/data", name="listeutilisateur_data")
+     */
+    public function listeutilisateurData(UtilisateurRepository $UtilisateurRepository):Response
+    {
+        $utilisateurs = $UtilisateurRepository->findAll();
+        return $this->render('listeutilisateur/download.html.twig' , [
+            'utilisateurs' => $utilisateurs
+        ]);
+        return $this->render('listeutilisateur/data.html.twig');
+    }
+    
+ /**
+     * @Route("/listeutilisateur/data/download", name="listeutilisateur_download")
+     * 
+     */
+
+     public function downloadUserData(UtilisateurRepository $UtilisateurRepository):Response
+     {
+
+
+        $utilisateurs = $UtilisateurRepository->findAll();
+        return $this->render('listeutilisateur/download.html.twig' , [
+            'utilisateurs' => $utilisateurs
+        ]);
+
+
+         //installation de DOMpdf : composer require dompdf/dompdf (dans le terminal)
+
+         //on defini les option du pdf
+         $pdfOptions = new Options();
+         //police par defauts
+         $pdfOptions->set('defaultFont', 'Arial');
+         //resoudre pb lié au sll
+         $pdfOptions->setIsRemoteEnabled(true);
+         // on instancie Dompdf
+
+         $dompdf = new Dompdf($pdfOptions);
+         $context = stream_context_create([
+             'ssl'=>[
+                 'verify_peer' => FALSE,
+                 'verify_peer_name'=> FALSE,
+                 'allow_self_signed'=> TRUE
+
+             ]
+             ]);
+             $dompdf-> setHttpContext($context);
+
+             //on genère le hrtml
+
+             $html = $this->renderView('listeutilisateur/download.html.twig');
+             $dompdf->loadHtml($html);
+             $dompdf->setPaper('A4', 'portrait');
+             $dompdf->render();
+
+             //ongénère un nom de fichier
+             $fichier = 'utilisateur-data'.'.pdf';
+
+             // on envoie le pdf au navigateur
+
+             $dompdf->stream($fichier, [
+                 'Attachment' => true
+             ]);
+             return new Response();
+
+            
+     }
 
 }
 

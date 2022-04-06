@@ -1,10 +1,7 @@
-{% extends 'base.html.twig' %}
+{% extends "base_pdf.html.twig" %}
 
-{% block title %}Hello ListeutilisateurController!{% endblock %}
-
-{% block body %}
-
-
+{% block title %} Listeutilisateur!{% endblock %}
+ {% block body %}
 
 
 <table class="table table-bordered table-striped">
@@ -31,10 +28,7 @@
                <td>{{ utilisateur.adresse }}</td>
                <td>{{ utilisateur.email }}</td>
                <td>{{ utilisateur.tel }}</td>
-               <td>
-               <a href="{{path("listeutilisateur_modifier",{id: utilisateur.id})}}">modifier/</a>
-               <a href="{{path("listeutilisateur_supprimer",{id: utilisateur.id})}}">Supprimer</a>
-               </td>
+             
             </tr>
         {% endfor %}
 
@@ -42,9 +36,4 @@
 
         
     </tbody>
-
-   
-</table>
-<a href="{{path("listeutilisateur_download")}} class=btn btn-success">télécharger</a>
-
-{% endblock %}
+    {% endblock %}

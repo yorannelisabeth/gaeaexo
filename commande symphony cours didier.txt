@@ -1,4 +1,15 @@
    
+
+   probleme installation yarn solution :
+   installation:
+    npm install --global yarn
+    si yarn n'est pas reconnu en tant que commande appliquer ceci :
+    dans le powershell en tant que administrateur faire les commande indiquer dans la documentation ci dessous
+    https://www.windows8facile.fr/powershell-execution-de-scripts-est-desactivee-activer/
+
+
+
+
    ne pas envoyer ces migration lors d'un push / si jamais c'est fait supprimer toute les migration existante en local et distant puis refaire les commande de make:migrate puis migration migrate
    
    - symfony server:ca:install
@@ -218,3 +229,12 @@ ensuite vous cochez la checkbox dans "Editor: Format On Save"
 et c'est ok
 et vous verrez la magie opérer à chaque fois que vous enregistrerez
 votre fichier ;)
+
+
+
+php bin/console debug:router pour verifier les routes existante
+
+tranformer le scss en css afin de le voir 
+
+exemple de commande : 
+sass --watch public/sass/newsletter.scss public/css/newsletter.css
